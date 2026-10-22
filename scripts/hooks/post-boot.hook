@@ -1,0 +1,4 @@
+#!/bin/bash
+# Omarchy post-boot hook: if the machine was off over midnight, catch up.
+[[ -x $HOME/.local/bin/rosary-daily ]] || exit 0
+exec "$HOME/.local/bin/rosary-daily" --sync

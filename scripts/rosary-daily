@@ -1,0 +1,217 @@
+#!/bin/bash
+# rosary-daily — keep the Rosary theme's wallpapers in step with the day.
+#
+# The five paintings of the day's mystery set are placed in the theme's
+# backgrounds/ folder (and in the live staged copy Omarchy reads) and one of
+# them is set as the wallpaper. At midnight the set changes by itself.
+#
+#   rosary-daily              sync the set; change wallpaper if it is stale
+#   rosary-daily --tick       also advance through the five when no automatic
+#                             wallpaper plugin is doing the rotating
+#   rosary-daily --force      recopy the set and set a wallpaper now
+#   rosary-daily --status     show today's set and what is on screen
+#   rosary-daily --print-set  print the set slug only (joyful, …)
+#
+# Traditional weekday order: Sunday and Wednesday Glorious, Monday and
+# Saturday Joyful, Tuesday and Friday Sorrowful, Thursday Luminous.
+set -euo pipefail
+
+THEME=rosary
+THEME_DIR=${ROSARY_THEME_DIR:-$HOME/.config/omarchy/themes/$THEME}
+STATE=${XDG_STATE_HOME:-$HOME/.local/state}/rosary
+OMARCHY_CURRENT=$HOME/.local/state/omarchy/current
+CURRENT_NAME=$OMARCHY_CURRENT/theme.name
+LIVE_BG=$OMARCHY_CURRENT/theme/backgrounds
+USER_BG=$HOME/.config/omarchy/backgrounds/$THEME
+STAMP=$STATE/day
+LOCK=$STATE/lock
+AUTO_CONFIG=$HOME/.config/omarchy/auto-wallpaper/config.json
+INTERVAL=${ROSARY_INTERVAL_MINUTES:-30}
+[[ $INTERVAL =~ ^[0-9]+$ ]] && (( INTERVAL > 0 )) || INTERVAL=30
+PATTERN='(joyful|sorrowful|glorious|luminous)-[0-9][0-9]-.*\.(jpg|jpeg|png)$'
+
+mkdir -p "$STATE"
+
+mode=${1:-sync}
+case $mode in
+--tick) mode=tick ;;
+--force) mode=force ;;
+--status) mode=status ;;
+--print-set) mode=print-set ;;
+--sync | tick | force | status | print-set) ;;
+-h | --help)
+  sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'
+  exit 0
+  ;;
+*)
+  echo "Usage: rosary-daily [--tick|--force|--status|--print-set]" >&2
+  exit 1
+  ;;
+esac
+
+today_set() {
+  case $(date +%u) in
+  1 | 6) echo joyful ;;
+  2 | 5) echo sorrowful ;;
+  3 | 7) echo glorious ;;
+  4) echo luminous ;;
+  esac
+}
+
+set_title() {
+  case $1 in
+  joyful) echo "The Joyful Mysteries" ;;
+  sorrowful) echo "The Sorrowful Mysteries" ;;
+  glorious) echo "The Glorious Mysteries" ;;
+  luminous) echo "The Luminous Mysteries" ;;
+  esac
+}
+
+theme_active() {
+  [[ $(cat "$CURRENT_NAME" 2>/dev/null || true) == "$THEME" ]]
+}
+
+auto_wallpaper_on() {
+  [[ -f $AUTO_CONFIG ]] || return 1
+  if command -v jq >/dev/null 2>&1; then
+    jq -e '.enabled == true' "$AUTO_CONFIG" >/dev/null 2>&1
+  else
+    grep -Eq '"enabled"[[:space:]]*:[[:space:]]*true' "$AUTO_CONFIG"
+  fi
+}
+
+files_for_set() {
+  local set=$1
+  find "$THEME_DIR/paintings" -maxdepth 1 -type f -name "$set-[0-9][0-9]-*.jpg" \
+    2>/dev/null | sort
+}
+
+# The set is current when the stamp matches today and both background
+# directories hold exactly our five files for the day.
+set_is_current() {
+  local set=$1 count=0 f
+  [[ -f $STAMP && $(<"$STAMP") == "$(date +%F) $set" ]] || return 1
+  for f in $(files_for_set "$set"); do
+    count=$((count + 1))
+    [[ -f $THEME_DIR/backgrounds/${f##*/} ]] || return 1
+    [[ -f $LIVE_BG/${f##*/} ]] || return 1
+  done
+  (( count == 5 ))
+}
+
+replace_set() {
+  local set=$1 dir=$2 f
+  mkdir -p "$dir"
+  # Remove only paintings from an earlier day; leave any personal wallpapers.
+  find "$dir" -maxdepth 1 -type f -regextype posix-extended -regex ".*/$PATTERN" -delete 2>/dev/null || true
+  while IFS= read -r f; do
+    [[ -n $f ]] || continue
+    cp -f "$f" "$dir/${f##*/}"
+  done < <(files_for_set "$set")
+}
+
+sync_set() {
+  local set=$1 count
+  count=$(files_for_set "$set" | wc -l)
+  (( count == 5 )) || { echo "rosary-daily: expected 5 paintings for $set, found $count" >&2; return 1; }
+
+  replace_set "$set" "$THEME_DIR/backgrounds"
+  replace_set "$set" "$LIVE_BG"
+  printf '%s %s\n' "$(date +%F)" "$set" >"$STAMP"
+
+  # The auto-wallpaper plugin caches the current theme's catalog. Touching the
+  # theme name makes its FileView reload and re-list the folder, so tomorrow's
+  # paths replace yesterday's.
+  if [[ -f $CURRENT_NAME && -d $HOME/.config/omarchy/plugins/dizziee.auto-wallpaper ]]; then
+    touch "$CURRENT_NAME" 2>/dev/null || true
+  fi
+}
+
+current_background() {
+  readlink -f "$OMARCHY_CURRENT/background" 2>/dev/null || true
+}
+
+current_is_today() {
+  local set=$1 current=${2:-$(current_background)}
+  [[ ${current##*/} =~ ^$set-[0-9][0-9]- ]]
+}
+
+set_wallpaper() {
+  local path=$1 current
+  current=$(current_background)
+  [[ $current == "$(realpath -m "$path")" ]] && return 0
+  if command -v omarchy-theme-bg-set >/dev/null 2>&1; then
+    omarchy-theme-bg-set "$path" >/dev/null 2>&1 || return 0
+  else
+    omarchy theme bg set "$path" >/dev/null 2>&1 || return 0
+  fi
+}
+
+# Which of the five should be showing at this time of day.
+slot_index() {
+  local count=$1 minutes slot
+  minutes=$((10#$(date +%H) * 60 + 10#$(date +%M)))
+  slot=$((minutes / INTERVAL))
+  echo $((slot % count))
+}
+
+do_sync() {
+  local force=${1:-0} set current
+  theme_active || return 0
+  set=$(today_set)
+  current=$(current_background)
+
+  if ((force)) || ! set_is_current "$set"; then
+    sync_set "$set"
+  fi
+
+  local -a files
+  mapfile -t files < <(files_for_set "$set")
+  (( ${#files[@]} == 5 )) || return 0
+
+  local idx=0
+  if [[ $mode == tick ]] && ! auto_wallpaper_on; then
+    idx=$(slot_index "${#files[@]}")
+  fi
+
+  if ((force)) || ! current_is_today "$set" "$current"; then
+    set_wallpaper "${files[$idx]}"
+  elif [[ $mode == tick ]] && ! auto_wallpaper_on; then
+    set_wallpaper "${files[$idx]}"
+  fi
+}
+
+status() {
+  local set current name
+  set=$(today_set)
+  current=$(current_background)
+  name=${current##*/}
+  echo "Rosary"
+  echo "  theme active:  $(theme_active && echo yes || echo no)"
+  echo "  today:         $(date +%A), $(date +%-d\ %B\ %Y)"
+  echo "  mystery set:   $(set_title "$set")  ($set)"
+  echo "  wallpaper:     ${name:-none}"
+  echo "  set synced:    $(set_is_current "$set" && echo yes || echo no)"
+  echo "  auto-rotate:   $(auto_wallpaper_on && echo 'dizziee.auto-wallpaper (on)' || echo "rosary timer, every ${INTERVAL} min")"
+  echo "  paintings:"
+  local f
+  for f in $(files_for_set "$set"); do
+    printf '    %s\n' "${f##*/}"
+  done
+}
+
+if [[ $mode == print-set ]]; then
+  today_set
+  exit 0
+fi
+
+if [[ $mode == status ]]; then
+  status
+  exit 0
+fi
+
+# One writer at a time: the timer, the theme hook and a manual run can meet.
+exec 9>"$LOCK"
+flock -n 9 || exit 0
+
+do_sync "$([[ $mode == force ]] && echo 1 || echo 0)"

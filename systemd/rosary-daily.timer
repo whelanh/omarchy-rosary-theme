@@ -1,0 +1,12 @@
+[Unit]
+Description=Check the Rosary mystery wallpapers
+
+[Timer]
+OnBootSec=2min
+OnCalendar=*:0/15
+Persistent=true
+AccuracySec=30s
+Unit=rosary-daily.service
+
+[Install]
+WantedBy=timers.target

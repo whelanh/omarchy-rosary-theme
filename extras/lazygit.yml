@@ -1,0 +1,36 @@
+# Rosary lazygit colours
+gui:
+  nerdFontsVersion: "3"
+  border: rounded
+  theme:
+    activeBorderColor:
+      - "#d9b45b"   # antique gold: focused panel
+      - bold
+    inactiveBorderColor:
+      - "#262c40"
+    searchingActiveBorderColor:
+      - "#c9a2c1"
+      - bold
+    optionsTextColor:
+      - "#efd28c"
+    selectedLineBgColor:
+      - "#2a3048"
+    inactiveViewSelectedLineBgColor:
+      - "#181c2b"
+    cherryPickedCommitFgColor:
+      - "#0b0d15"
+    cherryPickedCommitBgColor:
+      - "#c9a2c1"
+    markedBaseCommitFgColor:
+      - "#0b0d15"
+    markedBaseCommitBgColor:
+      - "#d9b45b"
+    unstagedChangesColor:
+      - "#c25b62"
+    defaultFgColor:
+      - "#e9dfcc"
+  authorColors:
+    "*": "#d9b45b"
+  branchColorPatterns:
+    "^main$": "#8fa286"
+    "^master$": "#8fa286"

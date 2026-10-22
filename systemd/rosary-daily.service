@@ -1,0 +1,10 @@
+[Unit]
+Description=Rosary daily mystery wallpaper
+Documentation=file:%h/.config/omarchy/themes/rosary/README.md
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/rosary-daily --tick
+Nice=10

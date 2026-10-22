@@ -1,0 +1,36 @@
+# Rosary — candlelit sacred art: ultramarine night, ivory parchment,
+# antique gold, and the oxblood of the Passion.
+mode = "dark"
+
+accent = "#d9b45b"
+selection = "#2a3048"
+muted = "#847d6e"
+
+background = "#0b0d15"
+dark_background = "#080a10"
+darker_background = "#05060a"
+lighter_background = "#181c2b"
+
+foreground = "#e9dfcc"
+dark_foreground = "#b8ae9b"
+light_foreground = "#f2eadb"
+bright_foreground = "#fbf6ea"
+
+selection_foreground = "#0b0d15"
+selection_background = "#d9b45b"
+
+red = "#c25b62"
+orange = "#d08a4e"
+yellow = "#d9b45b"
+green = "#8fa286"
+cyan = "#83a9b5"
+blue = "#6f8fc9"
+magenta = "#a97fa1"
+brown = "#8b6a4a"
+
+bright_red = "#dd7f83"
+bright_yellow = "#efd28c"
+bright_green = "#aec3a3"
+bright_cyan = "#a8c9d3"
+bright_blue = "#97b2e6"
+bright_magenta = "#c9a2c1"

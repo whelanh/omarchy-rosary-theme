@@ -1,0 +1,5 @@
+#!/bin/bash
+# Omarchy theme-set hook: populate today's paintings when Rosary is applied.
+[[ ${1:-} == rosary ]] || exit 0
+[[ -x $HOME/.local/bin/rosary-daily ]] || exit 0
+exec "$HOME/.local/bin/rosary-daily" --sync
