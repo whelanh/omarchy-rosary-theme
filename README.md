@@ -133,13 +133,14 @@ you only need this when you change the framing or the paintings.
 | Luminous | The Transfiguration | Matthew 17:1–9 |
 | Luminous | The Institution of the Eucharist | Luke 22:14–20 |
 
-The underlying paintings are public domain. The image files were downloaded
-from **The Free Catholic Gallery** ([sdcason.com](https://sdcason.com/)), whose
-free images are licensed **CC BY 4.0**; the required attribution, per-painting
-source links and a note on the changes made are in [CREDITS.md](CREDITS.md).
-Only cropping, colour adjustment, framing and captioning were applied; no
-painting was repainted or generated. Scripture references follow the usual
-Rosary convention.
+The underlying paintings are public domain. Nineteen image files were
+downloaded from **The Free Catholic Gallery** ([sdcason.com](https://sdcason.com/)),
+whose free images are licensed **CC BY 4.0**; *The Finding in the Temple* came
+from the open-access collection of **The Metropolitan Museum of Art**. The
+required attribution, per-painting source links and a note on the changes made
+are in [CREDITS.md](CREDITS.md). Only cropping, colour adjustment, framing and
+captioning were applied; no painting was repainted or generated. Scripture
+references follow the usual Rosary convention.
 
 ## Uninstall
 
@@ -162,6 +163,7 @@ MIT (see [`LICENSE`](LICENSE)).
 The paintings in `art/originals/` and the adapted wallpapers in `paintings/`
 come from **The Free Catholic Gallery** at [sdcason.com](https://sdcason.com/)
 by **Shalone Cason**, licensed
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Attribution,
-per-image source links and the changes made are in
-[`CREDITS.md`](CREDITS.md). The underlying works are public domain.
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), except
+*Christ among the Doctors*, which is from The Metropolitan Museum of Art's
+open-access collection. Attribution, per-image source links and the changes
+made are in [`CREDITS.md`](CREDITS.md). The underlying works are public domain.
