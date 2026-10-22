@@ -167,3 +167,10 @@ by **Shalone Cason**, licensed
 *Christ among the Doctors*, which is from The Metropolitan Museum of Art's
 open-access collection. Attribution, per-image source links and the changes
 made are in [`CREDITS.md`](CREDITS.md). The underlying works are public domain.
+
+## Companion plugin
+
+For the daily readings, the Catechism, prayers, the Liturgy of the Hours and the
+saint of the day, see **[Catholic Reference](https://github.com/whelanh/omarchy-catholic-reference)**,
+a Chi-Rho bar widget listed on the official Omarchy plugin site:
+<https://plugins.omarchy.org/plugin.html?id=io.github.whelanh.catholic-reference>.
