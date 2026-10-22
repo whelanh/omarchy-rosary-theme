@@ -25,7 +25,7 @@ STATE="${XDG_STATE_HOME:-$HOME/.local/state}/rosary"
 USER_BG="$HOME/.config/omarchy/backgrounds/$THEME"
 CURRENT_NAME="$HOME/.local/state/omarchy/current/theme.name"
 THEME_FILES=(colors.toml btop.theme icons.theme chromium.theme hyprland.lua
-  preview.png unlock.png paintings extras)
+  preview.png unlock.png paintings extras README.md CREDITS.md LICENSE)
 
 cursors=1 rotate=1 plymouth=0 uninstall=0
 for arg in "$@"; do
