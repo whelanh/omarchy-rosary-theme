@@ -51,7 +51,7 @@ rosary-daily --print-set   # joyful | sorrowful | glorious | luminous
 | **Cursors** (`cursors/`) | A 14-shape XCursor theme built around a small gold crucifix pointer, a hand with a cross at the wrist, an I-beam, rosary-bead wait and progress cursors, and matching resize shapes. Inherits Adwaita for anything not drawn. |
 | **Lock screen / boot badge** (`unlock.png`) | A gold crucifix in a ring with an ivory corpus and INRI scroll. Omarchy uses it as the lock-screen badge and Plymouth logo. |
 | **Terminal rice** (`extras/`) | Starship prompt, fastfetch crucifix logo and layout, lazygit colours, eza and fzf colours. Installed and swapped by [Omarchy Living Themes](https://github.com/prostratepossum/omarchy-living-themes) when present. |
-| **Login chime** (`extras/login.wav`) | A soft two-note church bell, played by Living Themes at login if its sound service is enabled. |
+| **Login chime** (`extras/login.wav`) | Four tolls of a vintage mission bell (Craig Smith, CC0), played by Living Themes at login if its sound service is enabled. |
 
 ![Rosary cursors](cursors/preview.png)
 
@@ -106,7 +106,8 @@ you only need this when you change the framing or the paintings.
 ```
 
 `build-wallpapers.py` needs Python with Pillow and numpy. `build-emblem.py` and
-`cursors/build.py` also need `rsvg-convert`.
+`cursors/build.py` also need `rsvg-convert`; `make-chime.py` needs `numpy` and
+`ffmpeg`.
 
 ## Paintings
 
@@ -159,6 +160,10 @@ it.
 
 Code, cursor drawings, badge, chime and the framed/captioned wallpaper treatment:
 MIT (see [`LICENSE`](LICENSE)).
+
+The login chime is a trim of **G20-12-Mission Bells** by **craigsmith**,
+released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
+See [`CREDITS.md`](CREDITS.md) for the source link and the edits made.
 
 The paintings in `art/originals/` and the adapted wallpapers in `paintings/`
 come from **The Free Catholic Gallery** at [sdcason.com](https://sdcason.com/)

@@ -63,9 +63,22 @@ photograph (3,895 × 2,998; accession 1974.368). The Gaulli page on the gallery
 titles the work *The Ascension of Our Lady*; the theme uses it for the
 Assumption mystery, as the gallery does.
 
+## Audio
+
+The login chime (`extras/login.wav`) is trimmed from **G20-12-Mission Bells**
+by **craigsmith** on Freesound, released under
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
+
+Source: <https://freesound.org/people/craigsmith/sounds/438227/>
+
+The spoken slate at the start was removed, the first four actual bell tolls
+were kept, and the clip was faded and levelled. The source recording is
+`art/originals/mission-bells.mp3`.
+
 ## Code and generated artwork
 
-The theme code, cursor drawings, badge, chime and the framed/captioned wallpaper
-treatment are MIT licensed; see [LICENSE](LICENSE). The underlying paintings
-remain in the public domain. The CC BY 4.0 attribution above applies to the
-image files supplied by The Free Catholic Gallery.
+The theme code, cursor drawings, badge, the chime edit and the framed/captioned
+wallpaper treatment are MIT licensed; see [LICENSE](LICENSE). The underlying
+paintings remain in the public domain. The chime's source recording is CC0 (see
+Audio above). The CC BY 4.0 attribution above applies to the image files
+supplied by The Free Catholic Gallery.
