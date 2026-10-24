@@ -10,8 +10,9 @@
 #
 # The theme is installed as a git clone in ~/.config/omarchy/themes/rosary, so
 # `omarchy theme update` pulls it like any other theme from a repository. The
-# cursor, script, timer and hooks are links into that clone, so a pull reaches
-# all of them; rerun ./install.sh afterwards to reapply the theme.
+# script, timer and hooks are links into that clone, so a pull reaches them;
+# the cursor is copied (pickers skip symlinked themes), so rerun ./install.sh
+# to refresh it and reapply the theme.
 #
 # The theme follows the traditional weekday order of the Rosary: Sunday and
 # Wednesday Glorious, Monday and Saturday Joyful, Tuesday and Friday
@@ -44,7 +45,7 @@ for arg in "$@"; do
   --uninstall) uninstall=1 ;;
   --yes | -y) : ;;
   -h | --help)
-    sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,19p' "$0" | sed 's/^# \{0,1\}//'
     exit 0
     ;;
   *)
@@ -132,7 +133,10 @@ if ((cursors)); then
   fi
   mkdir -p "$(dirname "$CURSOR_DIR")"
   rm -rf "$CURSOR_DIR"
-  ln -sfn "$THEME_DIR/cursors/$CURSOR" "$CURSOR_DIR"
+  # A real directory, not a link into the clone: cursor pickers find themes with
+  # `find -type d`, which skips symlinks. The cost is that cursor changes reach
+  # it when the installer runs again, not on `omarchy theme update`.
+  cp -a "$THEME_DIR/cursors/$CURSOR" "$CURSOR_DIR"
 else
   # Living Themes applies extras/cursor on every theme change, so take it out
   # of the installed theme when the user wants to keep their own cursor.

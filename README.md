@@ -89,8 +89,10 @@ it is not installed, the theme and wallpapers still work and the rice stays in
 
 The installer clones the theme into `~/.config/omarchy/themes/rosary`, so
 `omarchy theme update` pulls it like any other theme from a repository. The
-cursor, daily script, timer and hooks are symlinks into that clone, so a pull
-updates them too; rerun `./install.sh` to reapply the theme.
+daily script, timer and hooks are symlinks into that clone, so a pull updates
+them too; rerun `./install.sh` to reapply the theme. The cursor theme is
+copied rather than linked, because cursor pickers discover themes with
+`find -type d`, which skips symlinks.
 
 Omarchy does not allow a theme installed from a repository to ship Lua, so the
 gold-to-ultramarine border gradient lives in `colors.toml`
