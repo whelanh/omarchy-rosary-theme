@@ -16,6 +16,13 @@ dark_foreground = "#b8ae9b"
 light_foreground = "#f2eadb"
 bright_foreground = "#fbf6ea"
 
+# The focused border runs antique gold to ultramarine; unfocused stays ink.
+# Omarchy renders these through its hyprland.lua and shell.toml templates, so a
+# theme installed from a git repo keeps the gradient even though repo-installed
+# themes may not ship Lua.
+hyprland_active_border = "rgba(d9b45bee) rgba(6f8fc9ee) 45deg"
+hyprland_inactive_border = "rgba(2a3048aa)"
+
 selection_foreground = "#0b0d15"
 selection_background = "#d9b45b"
 

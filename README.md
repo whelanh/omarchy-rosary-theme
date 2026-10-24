@@ -25,14 +25,15 @@ The traditional weekday order is used:
 | Friday | Sorrowful |
 | Saturday | Joyful |
 
-At install, `rosary-daily` puts the five paintings of the day into the theme's
-`backgrounds/` folder and sets one as the wallpaper. A systemd user timer checks
-every fifteen minutes, so the set changes shortly after midnight even if the
-machine stays on. If you use the `dizziee.auto-wallpaper` plugin, it keeps
-cycling through those five; otherwise `rosary-daily` advances through them
-itself every 30 minutes. The theme also installs an Omarchy `theme-set` hook and
-a `post-boot` hook, so switching back to Rosary or rebooting always lands on the
-right set.
+At install, `rosary-daily` puts the five paintings of the day into
+`~/.config/omarchy/backgrounds/rosary/` and sets one as the wallpaper. Keeping
+them out of the theme folder means a theme update never touches them. A systemd
+user timer checks every fifteen minutes, so the set changes shortly after
+midnight even if the machine stays on. If you use the
+`dizziee.auto-wallpaper` plugin, it keeps cycling through those five; otherwise
+`rosary-daily` advances through them itself every 30 minutes. The theme also
+installs an Omarchy `theme-set` hook and a `post-boot` hook, so switching back
+to Rosary or rebooting always lands on the right set.
 
 ```sh
 rosary-daily --status      # today's set, what is on screen
@@ -45,9 +46,9 @@ rosary-daily --print-set   # joyful | sorrowful | glorious | luminous
 
 | Piece | What it does |
 | --- | --- |
-| **Theme** (`colors.toml`, `hyprland.lua`, `btop.theme`, `icons.theme`, `chromium.theme`) | Ultramarine night, parchment text, antique-gold accent, oxblood for the Passion. Focused borders run gold to ultramarine. |
+| **Theme** (`colors.toml`, `btop.theme`, `icons.theme`, `chromium.theme`) | Ultramarine night, parchment text, antique-gold accent, oxblood for the Passion. Focused borders run gold to ultramarine, set by `hyprland_active_border` in `colors.toml`. |
 | **Wallpapers** (`paintings/`) | All 20 mysteries as 3440×1440 gallery plates, built 21:9 so Omarchy's crop on ultrawide screens never cuts the painting or caption: the painting in a thin gold frame over a blurred, deeply muted echo of itself, captioned with its set and scripture. On 16:9 screens only the ink at the sides is cropped. |
-| **Daily rotation** (`rosary-daily`, systemd units, Omarchy hooks) | Places the correct five paintings each day, sets one, and refreshes the auto-wallpaper catalog at midnight. |
+| **Daily rotation** (`rosary-daily`, systemd units, Omarchy hooks) | Places the correct five paintings in `~/.config/omarchy/backgrounds/rosary/` each day, sets one, and refreshes the auto-wallpaper catalog at midnight. |
 | **Cursors** (`cursors/`) | A 14-shape XCursor theme built around a small gold crucifix pointer, a hand with a cross at the wrist, an I-beam, rosary-bead wait and progress cursors, and matching resize shapes. Inherits Adwaita for anything not drawn. |
 | **Lock screen / boot badge** (`unlock.png`) | A gold crucifix in a ring with an ivory corpus and INRI scroll. Omarchy uses it as the lock-screen badge and Plymouth logo. |
 | **Terminal rice** (`extras/`) | Starship prompt, fastfetch crucifix logo and layout, lazygit colours, eza and fzf colours. Installed and swapped by [Omarchy Living Themes](https://github.com/prostratepossum/omarchy-living-themes) when present. |
@@ -86,11 +87,36 @@ fastfetch, lazygit, eza/fzf and login chime all follow `omarchy theme set`. If
 it is not installed, the theme and wallpapers still work and the rice stays in
 `extras/` for you to copy.
 
-The installer copies the theme into `~/.config/omarchy/themes/rosary` without
-its `.git` directory, so Omarchy treats it as a hand-written theme: `hyprland.lua`
-is used rather than regenerated from the palette. Do not install this repository
-with `omarchy theme install` if you want the custom border gradient; use
-`./install.sh`.
+The installer clones the theme into `~/.config/omarchy/themes/rosary`, so
+`omarchy theme update` pulls it like any other theme from a repository. The
+cursor, daily script, timer and hooks are symlinks into that clone, so a pull
+updates them too; rerun `./install.sh` to reapply the theme.
+
+Omarchy does not allow a theme installed from a repository to ship Lua, so the
+gold-to-ultramarine border gradient lives in `colors.toml`
+(`hyprland_active_border`) and is rendered through Omarchy's own
+`hyprland.lua` template rather than a file in this repository.
+
+## Updating
+
+Rerunning the installer pulls the clone, refreshes the links and reapplies the
+theme:
+
+```sh
+./install.sh
+```
+
+The stock command only pulls, so restage the palette yourself:
+
+```sh
+omarchy theme update
+omarchy theme set rosary
+```
+
+`install.sh` clones the checkout's `origin` remote, so push any local changes
+before running it. A checkout that is already the installed theme folder (for
+example one cloned straight into `~/.config/omarchy/themes/rosary`) is used in
+place.
 
 ## Rebuilding the artwork
 
@@ -150,11 +176,11 @@ omarchy theme set moonlit-hearth      # or any other theme
 ./install.sh --uninstall
 ```
 
-This disables the timer, removes the hooks, script, cursors and theme folder,
-and hands the prompt, fastfetch, lazygit and cursor back to Living Themes. It
-does not undo the boot splash; that is Omarchy's standard splash, so repaint it
-from another theme with `omarchy-plymouth-set-by-theme <theme>` if you changed
-it.
+This disables the timer, removes the hooks, script, cursor, generated
+wallpapers and theme folder, and hands the prompt, fastfetch, lazygit and cursor
+back to Living Themes. It does not undo the boot splash; that is Omarchy's
+standard splash, so repaint it from another theme with
+`omarchy-plymouth-set-by-theme <theme>` if you changed it.
 
 ## License
 

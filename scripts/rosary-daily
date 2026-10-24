@@ -1,9 +1,10 @@
 #!/bin/bash
 # rosary-daily — keep the Rosary theme's wallpapers in step with the day.
 #
-# The five paintings of the day's mystery set are placed in the theme's
-# backgrounds/ folder (and in the live staged copy Omarchy reads) and one of
-# them is set as the wallpaper. At midnight the set changes by itself.
+# The five paintings of the day's mystery set are placed in the user background
+# folder (~/.config/omarchy/backgrounds/rosary) and in the live staged copy
+# Omarchy reads, and one of them is set as the wallpaper. At midnight the set
+# changes by itself.
 #
 #   rosary-daily              sync the set; change wallpaper if it is stale
 #   rosary-daily --tick       also advance through the five when no automatic
@@ -40,7 +41,7 @@ case $mode in
 --print-set) mode=print-set ;;
 --sync | tick | force | status | print-set) ;;
 -h | --help)
-  sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'
   exit 0
   ;;
 *)
@@ -93,7 +94,7 @@ set_is_current() {
   [[ -f $STAMP && $(<"$STAMP") == "$(date +%F) $set" ]] || return 1
   for f in $(files_for_set "$set"); do
     count=$((count + 1))
-    [[ -f $THEME_DIR/backgrounds/${f##*/} ]] || return 1
+    [[ -f $USER_BG/${f##*/} ]] || return 1
     [[ -f $LIVE_BG/${f##*/} ]] || return 1
   done
   (( count == 5 ))
@@ -115,7 +116,7 @@ sync_set() {
   count=$(files_for_set "$set" | wc -l)
   (( count == 5 )) || { echo "rosary-daily: expected 5 paintings for $set, found $count" >&2; return 1; }
 
-  replace_set "$set" "$THEME_DIR/backgrounds"
+  replace_set "$set" "$USER_BG"
   replace_set "$set" "$LIVE_BG"
   printf '%s %s\n' "$(date +%F)" "$set" >"$STAMP"
 
